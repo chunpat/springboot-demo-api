@@ -1,5 +1,6 @@
 package com.chunpat.fengxiuapi.v1;
 
+import com.chunpat.fengxiuapi.core.annotation.ScopeLevel;
 import com.chunpat.fengxiuapi.dto.PersonDto;
 import com.chunpat.fengxiuapi.exception.NotFoundException;
 import com.chunpat.fengxiuapi.model.Banner;
@@ -16,11 +17,15 @@ import javax.validation.constraints.NotBlank;
 @Validated
 public class BannerController {
 
+    @Autowired
+    BannerService bannerService;
+
     @PostMapping("/test/{id}")
+    @ScopeLevel(value = 8)
     public PersonDto test(
             @PathVariable @Max(2) Integer id,
             @RequestParam String name,
-            @RequestBody @Validated PersonDto person) {
+            @RequestBody @NotBlank @Validated PersonDto person) {
 //        person.getAge()
 //        response.getWriter().write("hello word");
 //        throw new NotFoundException(10000, "niubi");
@@ -28,10 +33,6 @@ public class BannerController {
         return person;
     }
 
-    @Autowired
-    BannerService bannerService;
-
-    @GetMapping("/name/{name}")
     public Banner getByName( @PathVariable @NotBlank String name){
         Banner banner = this.bannerService.getByName(name);
 

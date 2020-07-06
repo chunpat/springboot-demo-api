@@ -10,12 +10,12 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE,ElementType.FIELD})
-//@Constraint(ValidateBy = TokenPasswordValidator)
+@Constraint(validatedBy = TokenPasswordValidator.class)
 public @interface TokenPassword {
     String message() default "字段不符合要求";
 
     int min() default 6;
     int max() default 32;
-//    Class<?> [] groups() default {};
-//    Class<? extends Payload> [] payload() default {};
+    Class<?> [] groups() default {};
+    Class<? extends Payload> [] payload() default {};
 }
