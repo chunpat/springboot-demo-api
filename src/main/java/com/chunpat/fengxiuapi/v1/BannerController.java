@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/banner")
@@ -20,25 +21,27 @@ public class BannerController {
     @Autowired
     BannerService bannerService;
 
-    @PostMapping("/test/{id}")
-    @ScopeLevel(value = 8)
-    public PersonDto test(
-            @PathVariable @Max(2) Integer id,
-            @RequestParam String name,
-            @RequestBody @NotBlank @Validated PersonDto person) {
-//        person.getAge()
-//        response.getWriter().write("hello word");
-//        throw new NotFoundException(10000, "niubi");
-//        PersonDto pto = PersonDto.builder().build();
-        return person;
+    /**
+     * 获取banner 通过名字
+     * @param name
+     * @return
+     */
+    @GetMapping("name/{name}")
+    public Optional<Banner> getByName( @PathVariable @NotBlank String name){
+        Optional<Banner> banner = this.bannerService.getByName(name);
+        banner.orElseThrow(()-> new NotFoundException(30003));
+        return banner;
     }
 
-    public Banner getByName( @PathVariable @NotBlank String name){
-        Banner banner = this.bannerService.getByName(name);
-
-        if(banner == null){
-            throw new NotFoundException(30001);
-        }
-        return this.bannerService.getByName(name);
+    /**
+     * 获取banner 通过id
+     * @param id
+     * @return
+     */
+    @GetMapping("id/{id}")
+    public Optional<Banner> getById( @PathVariable Long id){
+        Optional<Banner> banner = this.bannerService.getById(id);
+        banner.orElseThrow(()-> new NotFoundException(30003));
+        return banner;
     }
 }
