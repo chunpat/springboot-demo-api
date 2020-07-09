@@ -22,7 +22,7 @@ public class Theme extends BaseEntity{
     private String titleImg;
     private Boolean online;
 
-    @ManyToMany(fetch= FetchType.EAGER)
+    @ManyToMany(fetch= FetchType.LAZY)
     @JoinTable(name = "themeSpu",joinColumns = @JoinColumn(name = "themeId"),inverseJoinColumns = @JoinColumn(name = "spuId"))
     private List<Spu> spuLIst;
 }

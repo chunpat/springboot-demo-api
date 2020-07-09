@@ -1,23 +1,21 @@
-package com.chunpat.fengxiuapi.model;
+package com.chunpat.fengxiuapi.vo;
 
+import com.chunpat.fengxiuapi.model.Category;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import java.sql.Timestamp;
-import java.util.Objects;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-@Entity
 @Getter
 @Setter
-public class Category extends BaseEntity{
+public class CategoryPureVo {
     private String name;
     private String description;
     private Boolean isRoot;
     private Integer parentId;
     private String img;
     private Integer index;
-    private Integer online;
     private Integer level;
-
 }

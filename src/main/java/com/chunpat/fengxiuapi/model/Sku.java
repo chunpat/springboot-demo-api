@@ -18,11 +18,11 @@ import java.util.*;
 @Setter
 public class Sku extends BaseEntity{
     private BigDecimal price;
-    private BigDecimal discount_price;
+    private BigDecimal discountPrice;
     private byte online;
     private String img;
     private String title;
-    private Integer spu_id;
+    private Long spuId;
 
     //    @Convert(converter = MapAndJson.class)
 //    private Map<String,Object> test;
@@ -30,8 +30,8 @@ public class Sku extends BaseEntity{
     private String specs;
     private String code;
     private Integer stock;
-    private Integer category_id;
-    private Integer rootCategory_id;
+    private Integer categoryId;
+    private Integer rootCategoryId;
 
     public void setSpecs(List<Spec> spec) {
         if(spec.isEmpty()){

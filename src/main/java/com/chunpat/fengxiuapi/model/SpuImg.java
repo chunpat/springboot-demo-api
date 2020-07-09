@@ -12,5 +12,5 @@ import java.util.Objects;
 @Getter
 public class SpuImg extends BaseEntity{
     private String img;
-    private Integer spu_id;
+    private Integer spuId;
 }

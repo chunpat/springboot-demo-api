@@ -29,8 +29,8 @@ public class Spu extends BaseEntity{
 //    @ManyToMany(fetch= FetchType.EAGER)
 //    @JoinTable(name = "sku_spec",joinColumns = @JoinColumn(name = "spu_id"),inverseJoinColumns = @JoinColumn(name = "sku_id"))
 //    private List<SkuSpec> skuList;
-    @OneToMany(fetch= FetchType.LAZY)
-    @JoinColumn(name = "spu_id")
+    @OneToMany(fetch= FetchType.EAGER)
+    @JoinColumn(name = "spuId")
     private List<Sku> skuList;
 
     @OneToMany(fetch= FetchType.LAZY)
@@ -38,6 +38,6 @@ public class Spu extends BaseEntity{
     private List<SpuDetailImg> spuDetailImgList;
 
     @OneToMany(fetch= FetchType.LAZY)
-    @JoinColumn(name = "spu_id")
+    @JoinColumn(name = "spuId")
     private List<SpuImg> spuImgList;
 }
