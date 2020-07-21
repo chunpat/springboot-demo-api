@@ -51,9 +51,9 @@ public class TokenController {
         boolean valid = false;
         try {
             JwtToken.verify(token.getToken());
+            valid = true;
         }catch (JWTVerificationException e){
         }
-        valid = true;
         map.put("is_valid",valid);
         return map;
     }

@@ -18,7 +18,7 @@ public class PersonDto {
     private String name;
 
     @NotBlank()
-    @Max(4)
-    private String age;
+    @Max(1000)
+    private Integer age;
 
 }

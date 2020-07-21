@@ -27,6 +27,7 @@ import java.util.Optional;
 public class CategoryController {
     @Autowired
     ActivityService activityService;
+
     @Autowired
     GridCategoryRepository gridCategoryRepository;
 
@@ -34,12 +35,12 @@ public class CategoryController {
     CategoryService categoryService;
 
     @GetMapping("all")
-    public CategoryAllPureVo getAll(){
-        return BeanMapperUtils.map(this.categoryService.getAll(),CategoryAllPureVo.class);
+    public CategoryAllPureVo getAll() {
+        return BeanMapperUtils.map(this.categoryService.getAll(), CategoryAllPureVo.class);
     }
 
     @GetMapping("grid/all")
-    public List<GridCategory> getGridCategoryAll(){
+    public List<GridCategory> getGridCategoryAll() {
         return this.gridCategoryRepository.findAll();
     }
 }

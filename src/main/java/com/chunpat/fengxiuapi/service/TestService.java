@@ -7,5 +7,12 @@ import java.awt.*;
 
 @Component
 public class TestService {
-    private String value = "7";
+    private int value = 111111;
+    public void niubi(Integer age){
+        System.out.println(age == this.value);
+    }
+
+//    public void niubi(Integer age,int page){
+//        System.out.println("2");
+//    }
 }
