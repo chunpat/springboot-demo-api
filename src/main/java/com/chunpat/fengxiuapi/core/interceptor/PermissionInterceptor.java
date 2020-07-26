@@ -2,10 +2,14 @@ package com.chunpat.fengxiuapi.core.interceptor;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.chunpat.fengxiuapi.core.LocalUser;
 import com.chunpat.fengxiuapi.core.annotation.ScopeLevel;
 import com.chunpat.fengxiuapi.exception.AuthenticatedException;
 import com.chunpat.fengxiuapi.exception.ForbiddenException;
+import com.chunpat.fengxiuapi.model.User;
+import com.chunpat.fengxiuapi.service.UserService;
 import com.chunpat.fengxiuapi.util.JwtToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -20,6 +24,9 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
         super();
     }
 
+    @Autowired
+    private UserService userService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Optional<ScopeLevel> scopeLevel = this.getScopeLevel(handler);
@@ -28,7 +35,9 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
         };
 
         String authorization = request.getHeader("Authorization");
-        if(authorization == null || !authorization.startsWith("Beader ")){
+        System.out.println("authorization");
+        System.out.println(authorization);
+        if(authorization == null || !authorization.startsWith("Bearer")){
             throw new AuthenticatedException();
         }
         String[] split = authorization.split(" ");
@@ -41,7 +50,17 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
         if(claimScope.asInt() < scopeLevel.get().value()){
             throw new AuthenticatedException(10006);
         }
+        //用户id
+        Claim claimUid = decodedJWT.getClaim("uid");
+        //写入用户信息
+        this.setUserToThreadLocal(claimUid.asLong(),claimScope.asInt());
         return true;
+    }
+
+    //缓存用户
+    public void setUserToThreadLocal(Long uid,Integer scope){
+        Optional<User> User = userService.getById(uid);
+        LocalUser.setUser(User.get(),scope);
     }
 
     @Override
@@ -52,6 +71,7 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         super.afterCompletion(request, response, handler, ex);
+        LocalUser.clear();
     }
 
     @Override

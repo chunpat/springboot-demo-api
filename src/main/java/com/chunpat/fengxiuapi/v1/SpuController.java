@@ -38,7 +38,7 @@ public class SpuController {
     ) {
         Spu spu = this.spuService.getById(id);
         if (spu == null) {
-            throw new NotFoundException(40003);
+            throw new NotFoundException();
         }
         return spu;
     }
@@ -49,7 +49,7 @@ public class SpuController {
     ) {
         Spu spu = this.spuService.getById(id);
         if (spu == null) {
-            throw new NotFoundException(40003);
+            throw new NotFoundException();
         }
         SpuSimplifyVo SpuSimplifyVo = new SpuSimplifyVo();
         BeanUtils.copyProperties(spu, SpuSimplifyVo);

@@ -23,6 +23,6 @@ public class Activity extends BaseEntity{
 
     @ManyToMany(fetch= FetchType.LAZY)
     @JoinTable(name = "activityCoupon",joinColumns = @JoinColumn(name = "activityId"),inverseJoinColumns = @JoinColumn(name = "couponId"))
-    private List<Coupon> coupons;
+    private List<Coupon> couponList;
 
 }

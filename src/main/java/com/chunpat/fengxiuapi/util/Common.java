@@ -9,6 +9,7 @@ import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Common {
@@ -32,5 +33,13 @@ public class Common {
             vo.add(k);
         });
         return vo;
+    }
+
+    //是否在时间内
+    public static Boolean isInTimeLine(Date now, Date startDate,Date endData){
+        if(!now.after(startDate) || !now.before(endData)){
+            return false;
+        }
+        return true;
     }
 }

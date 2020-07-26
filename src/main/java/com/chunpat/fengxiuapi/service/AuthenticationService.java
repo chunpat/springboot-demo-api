@@ -44,10 +44,10 @@ public class AuthenticationService {
     public String code2Session(String code){
         String url = MessageFormat.format(this.code2session,this.appid,this.appkey,code);
         RestTemplate rest = new RestTemplate();
-        String sessionText = rest.getForObject(url,String.class);
+        String sessionText1 = rest.getForObject(url,String.class);
         Map<String,Object> session = new HashMap<>();
         try {
-            session = mapper.readValue(sessionText, HashMap.class);
+            session = mapper.readValue(sessionText1, HashMap.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             throw new NotFoundException(10003);

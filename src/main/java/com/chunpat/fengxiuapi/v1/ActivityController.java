@@ -3,6 +3,7 @@ package com.chunpat.fengxiuapi.v1;
 import com.chunpat.fengxiuapi.exception.NotFoundException;
 import com.chunpat.fengxiuapi.model.Activity;
 import com.chunpat.fengxiuapi.service.ActivityService;
+import com.chunpat.fengxiuapi.vo.ActivityCouponPureVo;
 import com.chunpat.fengxiuapi.vo.ActivityPureVo;
 import com.chunpat.fengxiuapi.vo.SpuSimplifyVo;
 import org.springframework.beans.BeanUtils;
@@ -22,18 +23,16 @@ public class ActivityController {
     ActivityService activityService;
 
     @GetMapping("name/{name}/with_coupon")
-    public Optional<Activity> getWithCouponByName(@PathVariable @NotBlank String name){
+    public ActivityCouponPureVo getWithCouponByName(@PathVariable @NotBlank String name){
         Optional<Activity> activity = this.activityService.findByName(name);
         activity.orElseThrow(()->new NotFoundException(10002));
-        return activity;
+        return new ActivityCouponPureVo(activity.get());
     }
 
     @GetMapping("name/{name}")
     public ActivityPureVo getByName(@PathVariable @NotBlank String name){
         Optional<Activity> activity = this.activityService.findByName(name);
         activity.orElseThrow(()->new NotFoundException(10002));
-        ActivityPureVo activityPureVo = new ActivityPureVo();
-        BeanUtils.copyProperties(activity.get(), activityPureVo);
-        return activityPureVo;
+        return new ActivityPureVo(activity.get());
     }
 }

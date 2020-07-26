@@ -3,9 +3,10 @@ package com.chunpat.fengxiuapi.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Setter
@@ -18,10 +19,13 @@ public class Coupon extends BaseEntity{
     private BigDecimal fullMoney;
     private BigDecimal minus;
     private BigDecimal rate;
-    private short type;
+    private Integer type;
     private Integer valitiy;
-    private Integer activityId;
+    private Long activityId;
     private String remark;
     private Boolean wholeStore;
 
+    @ManyToMany(fetch= FetchType.LAZY)
+    @JoinTable(name = "couponCategory",joinColumns = @JoinColumn(name = "couponId"),inverseJoinColumns = @JoinColumn(name = "categoryId"))
+    private List<Category> categoryList;
 }
