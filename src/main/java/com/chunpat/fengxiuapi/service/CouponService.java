@@ -38,11 +38,20 @@ public class CouponService {
     }
 
     //获取我的卷
-    public List<Coupon> findByStatus(Long cid,Integer status){
-        return this.couponRepository.findByStatus(cid,status);
+    public List<Coupon> findAvailable(Long uid){
+        Date now = new Date();
+        return this.couponRepository.findByStatus(uid, CouponStatus.AVAILABLE.getValue(),now);
+    }
+    public List<Coupon> findUse(Long uid){
+        Date now = new Date();
+        return this.couponRepository.findByStatus(uid, CouponStatus.USED.getValue(),now);
+    }
+    public List<Coupon> findOutDate(Long uid){
+        Date now = new Date();
+        return this.couponRepository.findOutDate(uid, CouponStatus.AVAILABLE.getValue(),now);
     }
 
-    //获取圈
+    //获取卷
     public void collect(Long uid,Long id){
         /**
          * 1、是否存在
