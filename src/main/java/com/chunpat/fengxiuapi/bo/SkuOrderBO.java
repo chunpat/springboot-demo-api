@@ -10,6 +10,5 @@ import java.math.BigDecimal;
 public class SkuOrderBO {
     private BigDecimal actualPrice;
     private Integer count;
-    private Long categoryId;
-
+    private Long skuId;
 }

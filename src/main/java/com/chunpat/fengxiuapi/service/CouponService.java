@@ -27,32 +27,46 @@ public class CouponService {
     @Autowired
     ActivityRepository activityRepository;
 
-    public List<Coupon> findAllByCategory(Long cid){
+    public List<Coupon> findAllByCategory(Long cid) {
         Date nowdate = new Date();
-        return this.couponRepository.findAllByCategory(cid,nowdate);
+        return this.couponRepository.findAllByCategory(cid, nowdate);
+    }
+
+    //id获取
+    public Optional<Coupon> findById(Long id) {
+        return this.couponRepository.findById(id);
+    }
+
+    //id和uid获取
+    public Optional<UserCoupon> findFirstByCouponIdAndUserId(Long id,Long uid) {
+        return this.userCouponRepository.findFirstByCouponIdAndUserId(id, uid);
     }
 
     //获取全场圈
-    public List<Coupon> findAllIsWholeStore(){
+    public List<Coupon> findAllIsWholeStore() {
         return this.couponRepository.findAllByWholeStore(Boolean.TRUE);
     }
 
-    //获取我的卷
-    public List<Coupon> findAvailable(Long uid){
+    //获取可用的卷
+    public List<Coupon> findAvailable(Long uid) {
         Date now = new Date();
-        return this.couponRepository.findByStatus(uid, CouponStatus.AVAILABLE.getValue(),now);
+        return this.couponRepository.findByStatus(uid, CouponStatus.AVAILABLE.getValue(), now);
     }
-    public List<Coupon> findUse(Long uid){
+
+    //获取使用过的
+    public List<Coupon> findUse(Long uid) {
         Date now = new Date();
-        return this.couponRepository.findByStatus(uid, CouponStatus.USED.getValue(),now);
+        return this.couponRepository.findByStatus(uid, CouponStatus.USED.getValue(), now);
     }
-    public List<Coupon> findOutDate(Long uid){
+
+    //获取过期
+    public List<Coupon> findOutDate(Long uid) {
         Date now = new Date();
-        return this.couponRepository.findOutDate(uid, CouponStatus.AVAILABLE.getValue(),now);
+        return this.couponRepository.findOutDate(uid, CouponStatus.AVAILABLE.getValue(), now);
     }
 
     //获取卷
-    public void collect(Long uid,Long id){
+    public void collect(Long uid, Long id) {
         /**
          * 1、是否存在
          * 2、是否领取过
@@ -62,17 +76,17 @@ public class CouponService {
         //1、是否存在
         this.couponRepository.findFirstById(id).orElseThrow(NotFoundException::new);
         //2、是否领取过
-        Optional<UserCoupon>  oldUserCoupon = this.userCouponRepository.findFirstByCouponIdAndUserId(id,uid);
-        if(oldUserCoupon.isPresent()){
+        Optional<UserCoupon> oldUserCoupon = this.userCouponRepository.findFirstByCouponIdAndUserId(id, uid);
+        if (oldUserCoupon.isPresent()) {
             throw new ParameterException(40006);
         }
 
         //3、活动有效期
-        Optional<Activity>  activity = this.activityRepository.findFirstByCouponListId(id);
+        Optional<Activity> activity = this.activityRepository.findFirstByCouponListId(id);
         activity.orElseThrow(NotFoundException::new);
         Date now = new Date();
-        Boolean isIn = Common.isInTimeLine(now,activity.get().getStartTime(),activity.get().getEndTime());
-        if(!isIn){
+        Boolean isIn = Common.isInTimeLine(now, activity.get().getStartTime(), activity.get().getEndTime());
+        if (!isIn) {
             throw new ParameterException(40007);
         }
 
@@ -84,6 +98,6 @@ public class CouponService {
                 .status(CouponStatus.AVAILABLE.getValue())
                 .createTime(now)
                 .build();
-        this.userCouponRepository.save( userCouponNew);
+        this.userCouponRepository.save(userCouponNew);
     }
 }

@@ -52,4 +52,5 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
             " \n" +
             "  \n")
     List<Coupon> findOutDate(Long uid,Integer status,Date now);
+
 }

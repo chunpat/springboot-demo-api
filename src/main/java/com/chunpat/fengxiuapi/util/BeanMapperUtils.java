@@ -14,6 +14,7 @@ public class BeanMapperUtils {
         if (source == null) {
             return null;
         }
+        //@see https://github.com/DozerMapper/dozer
         return MAPPER.map(source, destinationClass);
     }
 

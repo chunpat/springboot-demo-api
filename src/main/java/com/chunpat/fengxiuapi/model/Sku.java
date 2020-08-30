@@ -1,17 +1,15 @@
 package com.chunpat.fengxiuapi.model;
 
-import com.chunpat.fengxiuapi.model1.model.Themes;
 import com.chunpat.fengxiuapi.util.GenericAndJson;
-import com.chunpat.fengxiuapi.util.ListAndJson;
-import com.chunpat.fengxiuapi.util.MapAndJson;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -33,6 +31,14 @@ public class Sku extends BaseEntity{
     private Integer categoryId;
     private Integer rootCategoryId;
 
+    /**
+     * 获取最终价格
+     * @return
+     */
+    public BigDecimal getActualPrice() {
+        return this.discountPrice != null && this.discountPrice.compareTo(new BigDecimal(0)) != 0 ? this.discountPrice : this.price;
+    }
+
     public void setSpecs(List<Spec> spec) {
         if(spec.isEmpty()){
             return;
@@ -45,6 +51,14 @@ public class Sku extends BaseEntity{
             return Collections.emptyList();
         }
         return  GenericAndJson.JsonToList(this.specs, new TypeReference<List<Spec>>() {});
+    }
+
+    public List<String> getSpecsValue() {
+        if(this.specs == null){
+            return Collections.emptyList();
+        }
+
+        return  this.getSpecs().stream().map(Spec::getValue).collect(Collectors.toList());
     }
 
 }

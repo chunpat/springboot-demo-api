@@ -1,13 +1,10 @@
 package com.chunpat.fengxiuapi.dto;
 
-import com.chunpat.fengxiuapi.core.enumeration.LoginType;
-import com.chunpat.fengxiuapi.dto.validator.TokenPassword;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -22,7 +19,7 @@ public class OrderDto {
 
     private Long couponId;
 
-    private List<OrderAddressDto> skuInfoDtoList;
+    private List<SkuInfoDto> skuInfoList;
 
-    private OrderAddressDto orderAddressDto;
+    private OrderAddressDto address;
 }
