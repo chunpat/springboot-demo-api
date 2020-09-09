@@ -1,21 +1,23 @@
 package com.chunpat.fengxiuapi.v1;
 
-import com.chunpat.fengxiuapi.Logic.Order;
 import com.chunpat.fengxiuapi.Logic.PlaceOrderChecker;
+import com.chunpat.fengxiuapi.bo.PageCounter;
 import com.chunpat.fengxiuapi.core.LocalUser;
-import com.chunpat.fengxiuapi.core.UnifyResponse;
 import com.chunpat.fengxiuapi.core.annotation.ScopeLevel;
 import com.chunpat.fengxiuapi.dto.OrderDto;
+import com.chunpat.fengxiuapi.model.Order;
 import com.chunpat.fengxiuapi.model.Sku;
 import com.chunpat.fengxiuapi.model.User;
 import com.chunpat.fengxiuapi.service.OrderService;
 import com.chunpat.fengxiuapi.service.SkuService;
+import com.chunpat.fengxiuapi.util.Common;
+import com.chunpat.fengxiuapi.vo.OrderIdVo;
+import com.chunpat.fengxiuapi.vo.OrderPureVo;
+import com.chunpat.fengxiuapi.vo.PagingDozer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -43,17 +45,46 @@ public class OrderController {
      */
     @PostMapping("")
     @ScopeLevel
-    public void placeOrder(@RequestBody @NotBlank OrderDto orderDto) {
+    public OrderIdVo placeOrder(@RequestBody @NotBlank OrderDto orderDto) {
         User user = LocalUser.getUser();
-        List<Sku> serviceSkuList = Order.getSkuList(orderDto.getSkuInfoList(), this.skuService);
+        List<Sku> serviceSkuList = com.chunpat.fengxiuapi.Logic.Order.getSkuList(orderDto.getSkuInfoList(), this.skuService);
 
         //订单检测
         PlaceOrderChecker placeOrderChecker = new PlaceOrderChecker(serviceSkuList, orderDto, this.skuMaxLimit);
         this.orderService.isOk(user.getId(), placeOrderChecker);
 
         //下订单
-        this.orderService.placeOrder(user.getId(), orderDto, placeOrderChecker);
+        Long orderId = this.orderService.placeOrder(user.getId(), orderDto, placeOrderChecker);
 
-        UnifyResponse.createSuccess();
+        return new OrderIdVo(orderId);
+    }
+
+    /**
+     * 订单详情
+     * @param orderId 订单id
+     * @return OrderPureVo
+     */
+    @GetMapping("detail/{orderId}")
+    @ScopeLevel
+    public OrderPureVo getOrderDetail(@PathVariable @NotBlank Long orderId) {
+        Order order = this.orderService.getDetail(LocalUser.getUser().getId(),orderId);
+        return new OrderPureVo(order);
+    }
+
+    @GetMapping("by/status/{status}")
+    @ScopeLevel
+    public PagingDozer<Order, OrderPureVo> getLatestList(
+            @PathVariable  Integer status,
+            @RequestParam(defaultValue = "1") Integer start,
+            @RequestParam(defaultValue = "10") Integer count
+    ) {
+        PageCounter pageCounter = Common.convertToPageParameter(start, count);
+        Page<Order> orderPage = this.orderService.getByStatus(
+                LocalUser.getUser().getId(),
+                status,
+                pageCounter.getPage(),
+                pageCounter.getCount()
+        );
+        return new PagingDozer<>(orderPage, OrderPureVo.class);
     }
 }

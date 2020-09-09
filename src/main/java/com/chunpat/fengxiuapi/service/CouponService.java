@@ -3,7 +3,6 @@ package com.chunpat.fengxiuapi.service;
 import com.chunpat.fengxiuapi.core.enumeration.CouponStatus;
 import com.chunpat.fengxiuapi.exception.NotFoundException;
 import com.chunpat.fengxiuapi.exception.ParameterException;
-import com.chunpat.fengxiuapi.model.Activity;
 import com.chunpat.fengxiuapi.model.Coupon;
 import com.chunpat.fengxiuapi.model.UserCoupon;
 import com.chunpat.fengxiuapi.repository.ActivityRepository;
@@ -74,7 +73,9 @@ public class CouponService {
          * 4、写入数据
          */
         //1、是否存在
-        this.couponRepository.findFirstById(id).orElseThrow(NotFoundException::new);
+        Optional<Coupon> coupon = this.couponRepository.findFirstById(id);
+        coupon.orElseThrow(NotFoundException::new);
+
         //2、是否领取过
         Optional<UserCoupon> oldUserCoupon = this.userCouponRepository.findFirstByCouponIdAndUserId(id, uid);
         if (oldUserCoupon.isPresent()) {
@@ -82,10 +83,10 @@ public class CouponService {
         }
 
         //3、活动有效期
-        Optional<Activity> activity = this.activityRepository.findFirstByCouponListId(id);
-        activity.orElseThrow(NotFoundException::new);
+//        Optional<Activity> activity = this.activityRepository.findFirstByCouponListId(id);
+//        activity.orElseThrow(NotFoundException::new);
         Date now = new Date();
-        Boolean isIn = Common.isInTimeLine(now, activity.get().getStartTime(), activity.get().getEndTime());
+        Boolean isIn = Common.isInTimeLine(now, coupon.get().getStartTime(), coupon.get().getEndTime());
         if (!isIn) {
             throw new ParameterException(40007);
         }
@@ -99,5 +100,17 @@ public class CouponService {
                 .createTime(now)
                 .build();
         this.userCouponRepository.save(userCouponNew);
+    }
+
+    /**
+     * 核销卷
+     * @param uid
+     * @param couponId
+     * @param orderId
+     */
+    public void writeOffConpon(Long uid, Long couponId, Long orderId) {
+        if(this.couponRepository.writeOffConpon(uid,  couponId,  orderId) == 0){
+            throw new ParameterException(40012);
+        };
     }
 }

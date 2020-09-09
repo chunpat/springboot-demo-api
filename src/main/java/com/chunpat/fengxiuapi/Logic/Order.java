@@ -4,7 +4,6 @@ import com.chunpat.fengxiuapi.dto.SkuInfoDto;
 import com.chunpat.fengxiuapi.exception.ParameterException;
 import com.chunpat.fengxiuapi.model.Sku;
 import com.chunpat.fengxiuapi.service.SkuService;
-import com.chunpat.fengxiuapi.util.BeanMapperUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,8 @@ public class Order {
             idArr.add(SkuInfoDto.getId());
         });
         List<Sku> skuList = skuService.findAllByIdIsIn(idArr);
-        return  BeanMapperUtils.mapList(skuList,Sku.class);
+        return  skuList;
+//        return  BeanMapperUtils.mapList(skuList,Sku.class);
     }
 
 }

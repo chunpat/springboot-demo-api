@@ -57,7 +57,9 @@ public class PlaceOrderChecker {
             //orderDetail数据
             this.orderDetail.add(new OrderDetail(serviceSku, sku));
 
-            serverTotalPrice.add(serviceSku.getActualPrice().multiply(new BigDecimal(sku.getCount())));
+            BigDecimal serviceSkuPrice = serviceSku.getActualPrice();
+            BigDecimal serviceSkuCount = new BigDecimal(sku.getCount());
+            serverTotalPrice = serverTotalPrice.add(serviceSkuPrice.multiply(serviceSkuCount));
         }
 
         if(this.orderDto.getCouponId() != null){

@@ -22,7 +22,7 @@ public class OrderDetail{
     private List<String> specsValue;
 
     public OrderDetail(Sku sku, SkuInfoDto skuInfoDto){
-        this.skuId = sku.getSpuId();
+        this.skuId = sku.getId();
 //        this.orderId = 0L;
         this.price = sku.getActualPrice();
         this.totalPrice = sku.getActualPrice().multiply(new BigDecimal(skuInfoDto.getCount()));

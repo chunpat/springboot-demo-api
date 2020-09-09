@@ -82,7 +82,7 @@ public class CouponChecker {
     public void canBeUsed() {
         //是否未使用
         if(this.userCoupon.getStatus().compareTo(1) != 0){
-            throw new ParameterException(50004);
+            throw new ParameterException(40012);
         }
     }
 

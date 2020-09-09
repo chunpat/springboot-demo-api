@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -30,6 +31,7 @@ public class Order extends BaseEntity{
     private String prepayId;
     private BigDecimal finalTotalPrice;
     private Integer status;
+    private Date expireTime;
 
     public void setSnapItems(List<OrderDetail> orderDetail) {
         if(orderDetail.isEmpty()){

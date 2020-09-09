@@ -1,14 +1,11 @@
 package com.chunpat.fengxiuapi.util;
 
 import com.chunpat.fengxiuapi.bo.PageCounter;
-import com.chunpat.fengxiuapi.exception.ServerInnerException;
-import com.chunpat.fengxiuapi.vo.ThemePureVo;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.dozermapper.core.DozerBeanMapperBuilder;
 import com.github.dozermapper.core.Mapper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -41,5 +38,16 @@ public class Common {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 计算过期时间
+     * @param now 当前calendar
+     * @param expireTime 过期时间秒数
+     * @return Calendar
+     */
+    public static Calendar expireTime(Calendar now, int expireTime){
+        now.add(Calendar.SECOND,expireTime);
+        return now;
     }
 }

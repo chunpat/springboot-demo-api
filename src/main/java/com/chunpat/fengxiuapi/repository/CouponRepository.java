@@ -1,9 +1,8 @@
 package com.chunpat.fengxiuapi.repository;
 
-import com.chunpat.fengxiuapi.core.LocalUser;
-import com.chunpat.fengxiuapi.model.Activity;
 import com.chunpat.fengxiuapi.model.Coupon;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
@@ -52,5 +51,13 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
             " \n" +
             "  \n")
     List<Coupon> findOutDate(Long uid,Integer status,Date now);
+
+    @Modifying
+    @Query("update UserCoupon set status = 2 ,orderId = :orderId \n" +
+            "where userId = :uid \n" +
+            "and couponId = :couponId \n" +
+            "and status = 1\n" +
+            "and orderId is null")
+    int writeOffConpon(Long uid, Long couponId, Long orderId);
 
 }
