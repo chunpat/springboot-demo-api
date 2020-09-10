@@ -105,17 +105,28 @@ public class OrderService {
 
     public Page<Order> getByStatus(Long uid, Integer status,Integer pageNum, Integer size) {
         Pageable page = PageRequest.of(pageNum, size, Sort.by("createTime").descending());
-        return this.orderRepository.findAllByStatus(uid,status,page);
+        switch (status){
+            case 0:
+                return this.orderRepository.findAllByUserId(uid,page);
+            case 2://支付
+            case 3://发货
+            case 4://完成
+                return this.orderRepository.findAllByStatus(uid,status,page);
+            default:
+                throw new ParameterException(50012);
+        }
     }
 
     /**
+     *
      * @param uid
      * @param pageNum
      * @param size
      * @return
      */
-    public Page<Order> getAllByUserId(Long uid,Integer pageNum, Integer size) {
-        Pageable page = PageRequest.of(pageNum, size, Sort.by("createTime").descending());
-        return this.orderRepository.findAllByUserId(uid,page);
+    public Page<Order> getUnpaidList(Long uid, Integer pageNum, Integer size) {
+        Pageable getUnPayPage = PageRequest.of(pageNum, size, Sort.by("createTime").descending());
+        Calendar now = Calendar.getInstance();
+        return this.orderRepository.findAllUnpaid(uid,now.getTime(),getUnPayPage);
     }
 }

@@ -80,32 +80,33 @@ public class OrderController {
             @RequestParam(defaultValue = "10") Integer count
     ) {
         PageCounter pageCounter = Common.convertToPageParameter(start, count);
-        Page<Order> orderPage = this.orderService.getAllByUserId(
+        Page<Order> orderPage = this.orderService.getByStatus(
+                LocalUser.getUser().getId(),
+                status,
+                pageCounter.getPage(),
+                pageCounter.getCount()
+        );
+        return new PagingDozer<>(orderPage, OrderSimplifyVo.class);
+    }
+
+    /**
+     * 查询待支付
+     * @param start start
+     * @param count count
+     * @return  PagingDozer<Order, OrderSimplifyVo>
+     */
+    @GetMapping("status/unpaid")
+    @ScopeLevel
+    public PagingDozer<Order, OrderSimplifyVo> getUnpaidList(
+            @RequestParam(defaultValue = "1") Integer start,
+            @RequestParam(defaultValue = "10") Integer count
+    ) {
+        PageCounter pageCounter = Common.convertToPageParameter(start, count);
+        Page<Order> orderPage = this.orderService.getUnpaidList(
                 LocalUser.getUser().getId(),
                 pageCounter.getPage(),
                 pageCounter.getCount()
         );
-//        switch (status){
-//            case 0:
-//                Page<Order> orderPage = this.orderService.getAllByUserId(
-//                        LocalUser.getUser().getId(),
-//                        pageCounter.getPage(),
-//                        pageCounter.getCount()
-//                );
-//                break;
-//            case 2://发货
-//            case 3://完成
-////                Page<Order> orderPage = this.orderService.getByStatus(
-////                        LocalUser.getUser().getId(),
-////                        status,
-////                        pageCounter.getPage(),
-////                        pageCounter.getCount()
-////                );
-//                break;
-//            default:
-//                throw new ParameterException(50012);
-//        }
-        PagingDozer<Order, OrderSimplifyVo> result = new PagingDozer<>(orderPage, OrderSimplifyVo.class);
-        return result;
+        return new PagingDozer<>(orderPage, OrderSimplifyVo.class);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Date;
 import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, String> {
@@ -18,6 +19,13 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     @Query("select o from Order o where " +
             "o.userId = :userId")
     Page<Order> findAllByUserId(Long userId, Pageable page);
+
+    @Query("select o from Order o where " +
+            "o.userId = :userId\n" +
+            "and ((o.status = 1 and o.expireTime < :now ) \n" +
+            "or" +
+            " o.status = 5)")//5 取消
+    Page<Order> findAllUnpaid(Long userId, Date now, Pageable page);
 
 //    @Query("select o from Order o where o.status = :status\n" +
 //            "and o.userId = :user_id")
