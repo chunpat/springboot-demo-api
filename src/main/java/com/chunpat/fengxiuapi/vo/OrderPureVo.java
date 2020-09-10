@@ -7,7 +7,7 @@ import org.springframework.beans.BeanUtils;
 
 @Getter
 @Setter
-public class OrderPureVo extends Order {
+public class OrderPureVo extends Order{
     public OrderPureVo(Order order) {
         BeanUtils.copyProperties(order,this);
     }

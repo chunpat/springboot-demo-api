@@ -107,4 +107,15 @@ public class OrderService {
         Pageable page = PageRequest.of(pageNum, size, Sort.by("createTime").descending());
         return this.orderRepository.findAllByStatus(uid,status,page);
     }
+
+    /**
+     * @param uid
+     * @param pageNum
+     * @param size
+     * @return
+     */
+    public Page<Order> getAllByUserId(Long uid,Integer pageNum, Integer size) {
+        Pageable page = PageRequest.of(pageNum, size, Sort.by("createTime").descending());
+        return this.orderRepository.findAllByUserId(uid,page);
+    }
 }

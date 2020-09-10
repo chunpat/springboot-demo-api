@@ -51,11 +51,11 @@ public class Order extends BaseEntity{
         this.snapAddress =  GenericAndJson.objectToJson(orderAddressDto);
     }
 
-    public List<OrderDetail> getSnapAddress() {
+    public OrderAddress getSnapAddress() {
         if(this.snapAddress == null){
-            return Collections.emptyList();
+            return new OrderAddress();
         }
-        return  GenericAndJson.JsonToList(this.snapAddress, new TypeReference<List<OrderDetail>>() {});
+        return  GenericAndJson.JsonToList(this.snapAddress, new TypeReference<OrderAddress>() {});
     }
 
 

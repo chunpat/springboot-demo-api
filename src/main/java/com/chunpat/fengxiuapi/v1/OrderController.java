@@ -13,6 +13,7 @@ import com.chunpat.fengxiuapi.service.SkuService;
 import com.chunpat.fengxiuapi.util.Common;
 import com.chunpat.fengxiuapi.vo.OrderIdVo;
 import com.chunpat.fengxiuapi.vo.OrderPureVo;
+import com.chunpat.fengxiuapi.vo.OrderSimplifyVo;
 import com.chunpat.fengxiuapi.vo.PagingDozer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,18 +74,38 @@ public class OrderController {
 
     @GetMapping("by/status/{status}")
     @ScopeLevel
-    public PagingDozer<Order, OrderPureVo> getLatestList(
-            @PathVariable  Integer status,
+    public PagingDozer<Order, OrderSimplifyVo> getLatestList(
+            @PathVariable Integer status,
             @RequestParam(defaultValue = "1") Integer start,
             @RequestParam(defaultValue = "10") Integer count
     ) {
         PageCounter pageCounter = Common.convertToPageParameter(start, count);
-        Page<Order> orderPage = this.orderService.getByStatus(
+        Page<Order> orderPage = this.orderService.getAllByUserId(
                 LocalUser.getUser().getId(),
-                status,
                 pageCounter.getPage(),
                 pageCounter.getCount()
         );
-        return new PagingDozer<>(orderPage, OrderPureVo.class);
+//        switch (status){
+//            case 0:
+//                Page<Order> orderPage = this.orderService.getAllByUserId(
+//                        LocalUser.getUser().getId(),
+//                        pageCounter.getPage(),
+//                        pageCounter.getCount()
+//                );
+//                break;
+//            case 2://发货
+//            case 3://完成
+////                Page<Order> orderPage = this.orderService.getByStatus(
+////                        LocalUser.getUser().getId(),
+////                        status,
+////                        pageCounter.getPage(),
+////                        pageCounter.getCount()
+////                );
+//                break;
+//            default:
+//                throw new ParameterException(50012);
+//        }
+        PagingDozer<Order, OrderSimplifyVo> result = new PagingDozer<>(orderPage, OrderSimplifyVo.class);
+        return result;
     }
 }
