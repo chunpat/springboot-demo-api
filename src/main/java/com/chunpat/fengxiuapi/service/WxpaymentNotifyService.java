@@ -5,7 +5,6 @@ import com.chunpat.fengxiuapi.repository.OrderRepository;
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +13,6 @@ import java.util.Optional;
 
 @Service
 public class WxpaymentNotifyService {
-
-    @Value("${wx.key}")
-    private String key;
-
     @Autowired
     OrderRepository orderRepository;
 

@@ -32,6 +32,12 @@ public class PaymentController {
         return this.wxpaymentService.preWxMiniOrder(orderId);
     }
 
+    /**
+     * 微信小程序回调
+     * @param request request
+     * @param response response
+     * @return
+     */
     @RequestMapping("wxMini/notify")
     public String  wxMiniNotify(HttpServletRequest request, HttpServletResponse response) {
         // <xml>
@@ -72,6 +78,5 @@ public class PaymentController {
             return WxNotify.fail();
         };
         return WxNotify.success();
-//        return this.wxpaymentService.preWxMiniOrder(orderId);
     }
 }

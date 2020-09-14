@@ -19,7 +19,13 @@ Map 一组数据
 ## Springboot JPA日志输出打印SQL语句和传入的参数 
 链接：https://blog.csdn.net/qq_35387940/article/details/102563845
 
-## Redis Pub/Sub 延迟消息
+## Redis Pub/Sub 延迟消息(EVENT NOTIFICATION)
+> 配置，默认不开启 
+
+修改配置redis.conf, 将notify-keyspace-events Ex注释打开
+```
+notify-keyspace-events Ex
+```
 
 ## rocketMQ 延迟消息队列
 
