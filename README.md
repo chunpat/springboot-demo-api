@@ -19,12 +19,44 @@ Map 一组数据
 ## Springboot JPA日志输出打印SQL语句和传入的参数 
 链接：https://blog.csdn.net/qq_35387940/article/details/102563845
 
-## Redis Pub/Sub 延迟消息(EVENT NOTIFICATION)
+## Redis Pub/Sub EVENT NOTIFICATION 来做延迟消息队列
+
 > 配置，默认不开启 
 
 修改配置redis.conf, 将notify-keyspace-events Ex注释打开
 ```
 notify-keyspace-events Ex
+```
+
+> 开启订阅模式
+
+```
+127.0.0.1:6379> PSUBSCRIBE __keyevent@0__:expired
+Reading messages... (press Ctrl-C to quit)
+1) "psubscribe"
+2) "__keyevent@0__:expired"
+3) (integer) 1
+```
+
+> 客户端pub 设置消息
+
+```
+127.0.0.1:6379> setex test 5 niubi
+OK
+```
+
+> 查看订阅端，多了四行数据
+```
+➜  ~ redis-cli
+127.0.0.1:6379> PSUBSCRIBE __keyevent@0__:expired
+Reading messages... (press Ctrl-C to quit)
+1) "psubscribe"
+2) "__keyevent@0__:expired"
+3) (integer) 1
+1) "pmessage"
+2) "__keyevent@0__:expired"
+3) "__keyevent@0__:expired"
+4) "test"
 ```
 
 ## rocketMQ 延迟消息队列

@@ -1,6 +1,7 @@
 package com.chunpat.fengxiuapi.service;
 
 import com.chunpat.fengxiuapi.Logic.PlaceOrderChecker;
+import com.chunpat.fengxiuapi.bo.OrderMessageBO;
 import com.chunpat.fengxiuapi.core.enumeration.OrderStatus;
 import com.chunpat.fengxiuapi.core.money.HalfUpDiscount;
 import com.chunpat.fengxiuapi.dto.OrderDto;
@@ -11,13 +12,14 @@ import com.chunpat.fengxiuapi.util.Common;
 import com.chunpat.fengxiuapi.util.OrderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -36,7 +38,7 @@ public class OrderService {
     @Autowired
     OrderRepository orderRepository;
 
-    @Value("${chunpat.payTimeLimit}")
+    @Value("${chunpat.pay-time-limit}")
     private int payTimeLimit;
 
     //下单
@@ -139,6 +141,36 @@ public class OrderService {
     public void updatePrepayId(Long userId, Long orderId, String prepayId) {
         Date now = Calendar.getInstance().getTime();
         if(this.orderRepository.updatePrepayId(userId,orderId,prepayId,now) != 1){
+            throw new ParameterException(50010);
+        };
+    }
+
+    /**
+     * 订单取消
+     * @param orderMessageBO orderMessageBO
+     */
+    @Transactional
+    @EventListener
+    public void cancel(OrderMessageBO orderMessageBO){
+        Order order = this.getDetail(orderMessageBO.getUserId(),orderMessageBO.getOrderId());
+        //改变订单状态
+        if(!order.getStatus().equals(OrderStatus.UNPAID.getValue())){
+            throw new ParameterException(10000);
+        }
+        this.cancelOrder(orderMessageBO.getUserId(),orderMessageBO.getOrderId());
+        //退库存
+        order.getSnapItems().forEach(OrderDetail->{
+            this.skuService.addStock(OrderDetail.getSkuId(),OrderDetail.getCount());
+        });
+    }
+
+    /**
+     *
+     * @param userId
+     * @param orderId
+     */
+    private void cancelOrder(Long userId, Long orderId) {
+        if(this.orderRepository.cancel(userId,orderId) != 1){
             throw new ParameterException(50010);
         };
     }

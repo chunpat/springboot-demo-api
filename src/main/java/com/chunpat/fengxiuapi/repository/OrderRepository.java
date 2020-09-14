@@ -45,6 +45,13 @@ public interface OrderRepository extends JpaRepository<Order, String> {
             "where o.id = :orderId\n" +
             "and (o.status = 1 or o.status = 5)")
     int updatePaidStatus(Long orderId);
+
+    @Modifying
+    @Query("update Order o set o.status = 5 " +
+            "where o.id = :orderId\n" +
+            "and o.status = 1\n" +
+            "and o.userId = :userId")
+    int cancel(Long userId,Long orderId);
 //    @Query("select o from Order o where o.status = :status\n" +
 //            "and o.userId = :user_id")
 //    Paging<Order> getByStatus(Long uid, Integer status);

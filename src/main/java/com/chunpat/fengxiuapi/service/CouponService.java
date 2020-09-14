@@ -113,4 +113,16 @@ public class CouponService {
             throw new ParameterException(40012);
         };
     }
+
+    /**
+     * 退回卷
+     * @param uid
+     * @param couponId
+     * @param orderId
+     */
+    public void backConpon(Long uid, Long couponId, Long orderId) {
+        if(this.couponRepository.backConpon(uid,  couponId,  orderId) == 0){
+            throw new ParameterException(40012);
+        };
+    }
 }

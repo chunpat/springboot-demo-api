@@ -34,4 +34,15 @@ public class SkuService {
             throw new ParameterException(50001);
         }
     }
+
+    /**
+     * 增加库存
+     * @param skuId
+     * @param count
+     */
+    public void addStock(Long skuId, Integer count){
+        if(this.skuRepository.addStock(skuId,count) == 0){
+            throw new ParameterException(50001);
+        }
+    }
 }

@@ -29,7 +29,7 @@ public class OrderController {
     @Autowired
     SkuService skuService;
 
-    @Value("${chunpat.sku.skuMaxLimit}")
+    @Value("${chunpat.sku.sku-max-limit}")
     private Integer skuMaxLimit;
 
     /**
