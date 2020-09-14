@@ -11,10 +11,7 @@ import com.chunpat.fengxiuapi.model.User;
 import com.chunpat.fengxiuapi.service.OrderService;
 import com.chunpat.fengxiuapi.service.SkuService;
 import com.chunpat.fengxiuapi.util.Common;
-import com.chunpat.fengxiuapi.vo.OrderIdVo;
-import com.chunpat.fengxiuapi.vo.OrderPureVo;
-import com.chunpat.fengxiuapi.vo.OrderSimplifyVo;
-import com.chunpat.fengxiuapi.vo.PagingDozer;
+import com.chunpat.fengxiuapi.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -32,7 +29,7 @@ public class OrderController {
     @Autowired
     SkuService skuService;
 
-    @Value("${missyou.sku.skuMaxLimit}")
+    @Value("${chunpat.sku.skuMaxLimit}")
     private Integer skuMaxLimit;
 
     /**
@@ -109,4 +106,6 @@ public class OrderController {
         );
         return new PagingDozer<>(orderPage, OrderSimplifyVo.class);
     }
+
+
 }

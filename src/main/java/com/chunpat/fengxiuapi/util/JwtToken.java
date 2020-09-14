@@ -19,11 +19,11 @@ public class JwtToken {
     private static Integer tokenExpiredIn;
     private static Integer defaultScope = 4;
 
-    @Value("${missyou.security.jwt-key}")
+    @Value("${chunpat.security.jwt-key}")
     public void setJwtKey(String jwtKey) {
         JwtToken.jwtKey = jwtKey;
     }
-    @Value("${missyou.security.token-expired-in}")
+    @Value("${chunpat.security.token-expired-in}")
     public void setTokenExpiredIn(Integer tokenExpiredIn) {
         JwtToken.tokenExpiredIn = tokenExpiredIn;
     }

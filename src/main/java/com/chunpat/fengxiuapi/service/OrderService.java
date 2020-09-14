@@ -36,7 +36,7 @@ public class OrderService {
     @Autowired
     OrderRepository orderRepository;
 
-    @Value("${missyou.payTimeLimit}")
+    @Value("${chunpat.payTimeLimit}")
     private int payTimeLimit;
 
     //下单
@@ -128,5 +128,18 @@ public class OrderService {
         Pageable getUnPayPage = PageRequest.of(pageNum, size, Sort.by("createTime").descending());
         Calendar now = Calendar.getInstance();
         return this.orderRepository.findAllUnpaid(uid,now.getTime(),getUnPayPage);
+    }
+
+    /**
+     *
+     * @param userId
+     * @param orderId
+     * @param prepayId
+     */
+    public void updatePrepayId(Long userId, Long orderId, String prepayId) {
+        Date now = Calendar.getInstance().getTime();
+        if(this.orderRepository.updatePrepayId(userId,orderId,prepayId,now) != 1){
+            throw new ParameterException(50010);
+        };
     }
 }

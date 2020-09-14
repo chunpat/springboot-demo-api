@@ -50,4 +50,14 @@ public class Common {
         now.add(Calendar.SECOND,expireTime);
         return now;
     }
+
+    /**
+     * 获取10位时间戳
+     * @return
+     */
+    public static String timestamp10(){
+        Long timestamp13 = Calendar.getInstance().getTimeInMillis();
+        String timestamp13String = timestamp13.toString();
+        return timestamp13String.substring(0,timestamp13String.length()-3);
+    }
 }
