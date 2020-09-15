@@ -17,9 +17,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -38,8 +41,14 @@ public class OrderService {
     @Autowired
     OrderRepository orderRepository;
 
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
+
     @Value("${chunpat.pay-time-limit}")
     private int payTimeLimit;
+
+    @Value("${spring.redis.listen-database}")
+    private int listenDatabase;
 
     //下单
     @Transactional
@@ -73,6 +82,13 @@ public class OrderService {
         if(orderDto.getCouponId() != null){
             this.writeOffConpon(uid,orderDto.getCouponId(),order.getId());
         }
+
+        //延迟消息
+        Long couponId = 0L;
+        if(orderDto.getCouponId() != null){
+            couponId = orderDto.getCouponId();
+        }
+        this.pubMessageRedis(uid,order.getId(),couponId);
         return order.getId();
     }
 
@@ -91,6 +107,25 @@ public class OrderService {
     //核销优惠券
     public void writeOffConpon(Long uid, Long couponId, Long orderId) {
         this.couponService.writeOffConpon(uid,couponId,orderId);
+    }
+
+    /**
+     * 推送延迟消息
+     * @param userId
+     * @param orderId
+     * @param couponId
+     */
+    public void pubMessageRedis(Long userId,Long orderId,Long couponId){
+        String key =  orderId + "-" + userId + "-" + couponId;
+        try{
+            JedisConnectionFactory connectionFactory = (JedisConnectionFactory) stringRedisTemplate.getConnectionFactory();
+            connectionFactory.setDatabase(this.listenDatabase);//切换6号数据库
+            this.stringRedisTemplate.setConnectionFactory(connectionFactory);
+            this.stringRedisTemplate.opsForValue().set(key,"1", Duration.ofSeconds(this.payTimeLimit));
+        }catch (RuntimeException e){
+            //todo log
+            e.printStackTrace();
+        }
     }
 
     /**
