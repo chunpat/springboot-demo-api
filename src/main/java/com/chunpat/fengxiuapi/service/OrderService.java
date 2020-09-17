@@ -17,12 +17,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redis.clients.jedis.Jedis;
 
-import java.time.Duration;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
@@ -49,6 +48,12 @@ public class OrderService {
 
     @Value("${spring.redis.listen-database}")
     private int listenDatabase;
+
+    @Value("${spring.redis.host}")
+    private String host;
+
+    @Value("${spring.redis.port}")
+    private int port;
 
     //下单
     @Transactional
@@ -118,10 +123,30 @@ public class OrderService {
     public void pubMessageRedis(Long userId,Long orderId,Long couponId){
         String key =  orderId + "-" + userId + "-" + couponId;
         try{
-            JedisConnectionFactory connectionFactory = (JedisConnectionFactory) stringRedisTemplate.getConnectionFactory();
-            connectionFactory.setDatabase(this.listenDatabase);//切换6号数据库
-            this.stringRedisTemplate.setConnectionFactory(connectionFactory);
-            this.stringRedisTemplate.opsForValue().set(key,"1", Duration.ofSeconds(this.payTimeLimit));
+            //旧版方法
+//            JedisConnectionFactory connectionFactory = (JedisConnectionFactory) redisTemplate.getConnectionFactory();
+//            connectionFactory.setDatabase(9);//切换9号数据库
+
+            //stringRedisTemplate 切换数据库
+//            LettuceConnectionFactory lcf = (LettuceConnectionFactory) stringRedisTemplate.getConnectionFactory();
+//            if (lcf != null) {
+//                lcf.setDatabase(this.listenDatabase);
+//                stringRedisTemplate.setConnectionFactory(lcf);
+//                this.stringRedisTemplate.opsForValue().set(key,"1", Duration.ofSeconds(this.payTimeLimit));
+//            }
+            //注意，使用上述方法进行Redis数据库切换后，整个项目的RedisTemplate连接数据库都会被切换。比如，
+            // 在UserServiceImpl类中将注入的RedisTemplate的数据库切换到db1，那么EmployeeServiceImpl注入
+            // 的RedisTemplate的数据库也会切换至db1。所以这种方法并不是线程安全的，可能会导致数据库中没有存放期待的数据。
+            //可以新建新的Jedis连接，Jedis与RedisTemplate彼此独立，或许可以做到一个项目中访问多个Redis数据库。
+
+            //jredis操作
+            //连接本地的 Redis 服务
+            Jedis jedis = new Jedis(this.host,this.port);
+            jedis.select(this.listenDatabase);
+            System.out.println("连接成功");
+            //设置 redis 字符串数据
+            jedis.setex(key, this.payTimeLimit,"1");
+
         }catch (RuntimeException e){
             //todo log
             e.printStackTrace();

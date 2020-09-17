@@ -46,7 +46,7 @@ api-package:
   com.chunpat.fengxiuapi
 
 wx:
-  appid: #########
+  appid: ##########
   appkey: #########
   code2session: https://api.weixin.qq.com/sns/jscode2session?appid={0}&secret={1}&js_code={2}&grant_type=authorization_code
   mchid: ########
@@ -62,6 +62,12 @@ chunpat:
   sku:
     sku-max-limit: 666
   pay-time-limit: 1800
+
+rocketmq:
+  name-server: 127.0.0.1:9876
+  producer:
+    group: newProducer
+    topic: newTopic
 
 
 
